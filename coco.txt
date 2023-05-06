@@ -1,0 +1,33 @@
+
+coco_class_1_10 = [
+"background", "person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic", "light", # 0-10
+
+]
+
+coco_class_2_10 = [
+"fire_hydrant", "stop", "sign", "parking", "meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow", # 11-20
+
+]
+
+coco_class_3_10 = [
+"elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee" # 21-30
+
+]
+
+coco_class_4_10 = [
+"skis", "snowboard", "sports", "ball", "kite", "baseball", "bat", "baseball", "glove", "skateboard", "surfboard", "tennis_racket", "bottle" # 31-40
+
+]
+coco_class_5_10 = [
+"wine", "glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich", "orange" # 41-50
+
+]
+coco_class_6_10 = [
+"broccoli", "carrot", "hot", "dog", "pizza", "donut", "cake", "chair", "couch", "potted_plant", "bed" # 51-60
+]
+coco_class_7_10 = [
+"dining", "table", "toilet", "tv", "laptop", "mouse", "remote", "keyboard", "cellphone", "microwave", "oven" # 61-70
+]
+coco_class_8_10 = [
+"toaster", "sink", "fridge", "book", "clock", "vase", "scissors", "teddy_bear", "hair", "drier", "toothbrush" # 71-80
+]
