@@ -58,3 +58,6 @@ show that MIANet yields superior performance and set a new state-of-the-art.*
 ### To-Do List
 - [ ] Complete the MIANet repository.
 
+### References
+This repo is mainly built based on PFENet, BAM. Thanks for their great work!
+
