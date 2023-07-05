@@ -26,8 +26,8 @@ show that MIANet yields superior performance and set a new state-of-the-art.*
 
 ## &#x1F527;Get Started
 **Just follow these steps to train and test MIANet.**
-### Dataset
-**1.** download the dataset from the following links.
+### Dataset (Following the BAM operations)
+**1.** Download the dataset from the following links.
 + PASCAL-5<sup>i</sup>: [PASCAL VOC 2012](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/) + [SBD](http://home.bharathh.info/pubs/codes/SBD/download.html)
 + COCO-20<sup>i</sup>: [MSCOCO2014](https://cocodataset.org/#download)
   
@@ -41,5 +41,7 @@ show that MIANet yields superior performance and set a new state-of-the-art.*
                      MSCOCO2014-->  train2014  
                                     val2014
 
-First: Download the data lists (.txt files) and put them into the BAM/lists directory.
+**3.** Download the data [lists](https://mailnwpueducn-my.sharepoint.com/:u:/g/personal/langchunbo_mail_nwpu_edu_cn/ESvJvL7X86pNqK5LSaKwK0sByDLwNx0kh73PVJJ_m1vSCg?e=RBjfKp) (.txt files) and put them into the lists_bam directory.
+
+
 
