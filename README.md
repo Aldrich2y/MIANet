@@ -1,6 +1,6 @@
 # MIANet
-<span style="font-size: larger;">Official PyTorch Implementation of MIANet: Aggregating Unbiased Instance and General Information for Few-Shot Semantic Segmentation(CVPR 2023)</span>
-![CVPR2023](/figure/logo.png "CVPR2023_logo")
+**Official PyTorch Implementation of MIANet: Aggregating Unbiased Instance and General Information for Few-Shot Semantic Segmentation(CVPR 2023)**
+![CVPR2023](/figure/logo.png)
 
 > **Abstract**: *Existing few-shot segmentation methods are based on the meta-learning strategy and extract instance knowledge
 from a support set and then apply the knowledge to segment target objects in a query set. However, the extracted
