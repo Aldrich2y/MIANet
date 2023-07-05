@@ -1,7 +1,6 @@
 # MIANet
 **Official PyTorch Implementation of MIANet: Aggregating Unbiased Instance and General Information for Few-Shot Semantic Segmentation(CVPR 2023)**
-![CVPR2023](/figure/logo.png)
-
+<img src="/figure/logo.png"  width="1000" height="250" align="bottom" />
 
 
 > **Abstract**: *Existing few-shot segmentation methods are based on the meta-learning strategy and extract instance knowledge
@@ -38,12 +37,20 @@ show that MIANet yields superior performance and set a new state-of-the-art.*
                                                  JPEGImages
                      VOCdevkit2012--> VOC2012-->
                                                  SegmentationClassAug
-      main/data---->           
+      MIANet/data---->           
                                     annotations
                      MSCOCO2014-->  train2014  
                                     val2014
 
-**3.** Download the data [lists](https://mailnwpueducn-my.sharepoint.com/:u:/g/personal/langchunbo_mail_nwpu_edu_cn/ESvJvL7X86pNqK5LSaKwK0sByDLwNx0kh73PVJJ_m1vSCg?e=RBjfKp) (.txt files) and put them into the lists_bam directory.
+**3.** Download the data [lists](https://mailnwpueducn-my.sharepoint.com/:u:/g/personal/langchunbo_mail_nwpu_edu_cn/ESvJvL7X86pNqK5LSaKwK0sByDLwNx0kh73PVJJ_m1vSCg?e=RBjfKp) (.txt files) and put them into the MIANet/lists_bam directory.
 
+### Models 
+(Pretrained PSPNet) Download the pre-trained PSPNet from [here](https://mailnwpueducn-my.sharepoint.com/:u:/g/personal/langchunbo_mail_nwpu_edu_cn/ETERT3xe5ndEpDhStts7JmcBlYDY_2G0hPVJUBtLLG-njg?e=MLzVIL) and put them under initmodel/pascal and initmodel/coco directory. 
 
+### Scripts
+**1.** Change configuration via the .yaml files in MIANet/config.
+**2.** Train MIANet under the settings (resnet50 backbone; fold=0; shot=1):   run  *train.py*. 
+**2.** Test MIANet (fill the *weight* parameter in .yaml file): run *test.py*
 
+### Visualization
+![result](/figure/result.png)
