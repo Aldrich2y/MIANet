@@ -19,7 +19,19 @@ and to obtain multi-scale information, we then introduce a
 non-parametric hierarchical prior module (HPM) to generate unbiased instance-level information via calculating the
 pixel-level similarity between the support and query image
 features. Finally, an information fusion module (IFM) combines the general and instance information to make predictions for the query image. Extensive experiments on
-PASCAL-5i and COCO-20i
+PASCAL-5<sup>i</sup> and COCO-20<sup>i</sup>
 show that MIANet yields superior performance and set a new state-of-the-art.*
 
+![pipeiline](/figure/pipeline.png "The pipleline of MIANet")
+
+## &#x1F527;Get Started
+**Just follow these steps to train and test MIANet.**
+### Dataset
+Download the dataset from the following links.
++ PASCAL-5<sup>i</sup>: [PASCAL VOC 2012](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/) + [SBD](http://home.bharathh.info/pubs/codes/SBD/download.html)
++ COCO-20<sup>i</sup>: [MSCOCO2014](https://cocodataset.org/#download)
+  
+Adjust these files to the following directory
+
+First: Download the data lists (.txt files) and put them into the BAM/lists directory.
 
