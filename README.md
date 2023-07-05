@@ -48,9 +48,13 @@ show that MIANet yields superior performance and set a new state-of-the-art.*
 (Pretrained PSPNet) Download the pre-trained PSPNet from [here](https://mailnwpueducn-my.sharepoint.com/:u:/g/personal/langchunbo_mail_nwpu_edu_cn/ETERT3xe5ndEpDhStts7JmcBlYDY_2G0hPVJUBtLLG-njg?e=MLzVIL) and put them under initmodel/pascal and initmodel/coco directory. 
 
 ### Scripts
-**1.** Change configuration via the .yaml files in MIANet/config.
-**2.** Train MIANet under the settings (resnet50 backbone; fold=0; shot=1):   run  *train.py*. 
-**2.** Test MIANet (fill the *weight* parameter in .yaml file): run *test.py*
+**1.** Change configuration via the .yaml files in MIANet/config.   
+**2.** Train MIANet under the settings (resnet50 backbone; fold=0; shot=1):   run  *train.py*.   
+**3.** Test MIANet (fill the *weight* parameter in .yaml file): run *test.py*
 
 ### Visualization
 ![result](/figure/result.png)
+
+### To-Do List
+- [ ] Complete the MIANet repository.
+
