@@ -27,11 +27,19 @@ show that MIANet yields superior performance and set a new state-of-the-art.*
 ## &#x1F527;Get Started
 **Just follow these steps to train and test MIANet.**
 ### Dataset
-Download the dataset from the following links.
+**1.** download the dataset from the following links.
 + PASCAL-5<sup>i</sup>: [PASCAL VOC 2012](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/) + [SBD](http://home.bharathh.info/pubs/codes/SBD/download.html)
 + COCO-20<sup>i</sup>: [MSCOCO2014](https://cocodataset.org/#download)
   
-Adjust these files to the following directory
+**2.** Adjust these files to the following directory:    
+
+                                                 JPEGImages
+                     VOCdevkit2012--> VOC2012-->
+                                                 SegmentationClassAug
+      main/data---->           
+                                    annotations
+                     MSCOCO2014-->  train2014  
+                                    val2014
 
 First: Download the data lists (.txt files) and put them into the BAM/lists directory.
 
