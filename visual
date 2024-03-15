@@ -12,7 +12,7 @@ from util import dataset
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # This file is based on the 1-shot settings of pascal-5i.
 # If the code contains error, Please contact us via the issue, thanks.
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
 
 def visual_two_model(support_image, support_mask, baseline_output, mianet_output, ori_image, query_mask, seed):
 
