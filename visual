@@ -1,0 +1,206 @@
+import argparse
+from util.config import load_cfg_from_cfg_file
+import numpy as np
+import cv2
+import os
+import torch
+from model.mianet import  MIANet
+from torch.nn import functional as F
+from util import transform, transform_tri
+from util import dataset
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# This file is based on the 1-shot settings of pascal-5i.
+# If the code contains error, Please contact us via the issue, thanks.
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+def visual_two_model(support_image, support_mask, baseline_output, mianet_output, ori_image, query_mask, seed):
+
+    # This part contains four logically identical parts
+    size = 473
+
+    # 1. visual the support label
+    pred_label = support_mask.squeeze(1).long()
+    colors = [[0, 0, 0], [0, 255, 0]]
+    best_pred = pred_label.cpu()
+    feature = best_pred.squeeze(dim=0)
+    feature = np.array(feature)
+    seg_img = np.zeros([size, size, 3])
+    seg_img = np.uint8(seg_img)
+    for c in range(2):
+        seg_img[:, :, 0] += np.uint8((feature[:, :] == c) * np.uint8(colors[c][0]))
+        seg_img[:, :, 1] += np.uint8((feature[:, :] == c) * np.uint8(colors[c][1]))
+        seg_img[:, :, 2] += np.uint8((feature[:, :] == c) * np.uint8(colors[c][2]))
+
+    old_img = support_image
+    old_img = cv2.resize(old_img, (size, size), interpolation=cv2.INTER_LINEAR)
+    img = cv2.addWeighted(old_img, 1, seg_img, 0.4, 0)
+    cv2.imwrite('visualization/%d/%d-support.png' % (seed, seed), img)
+
+
+    # 2. visual the baseline output
+    _, pred_label = torch.max(baseline_output, 1)
+
+    # accuracy
+    # acc = get_acc(pred_label, query_mask)
+    # iou = get_iou_v1(pred_label, query_mask)
+    # print('Baseline ouput:  ', 'acc: ', acc, "   iou:  ", iou[2][0])
+
+    colors = [[0, 0, 0], [0, 0, 255]]
+    best_pred = pred_label.cpu()
+    feature = best_pred.squeeze(dim=0)
+    feature = np.array(feature)
+    seg_img = np.zeros([size, size, 3])
+    seg_img = np.uint8(seg_img)
+    for c in range(2):
+        seg_img[:, :, 0] += np.uint8((feature[:, :] == c) * np.uint8(colors[c][0]))
+        seg_img[:, :, 1] += np.uint8((feature[:, :] == c) * np.uint8(colors[c][1]))
+        seg_img[:, :, 2] += np.uint8((feature[:, :] == c) * np.uint8(colors[c][2]))
+
+    old_img = ori_image
+    old_img = cv2.resize(old_img, (size, size), interpolation=cv2.INTER_LINEAR)
+    img = cv2.addWeighted(old_img, 1, seg_img, 0.4, 0)
+    cv2.imwrite('visualization/%d/%d-baseline.png' % (seed, seed), img)
+
+    # 3. visual the mianet output
+    _, pred_label = torch.max(mianet_output, 1)
+
+    # acc = get_acc(pred_label, query_mask)
+    # iou = get_iou_v1(pred_label, query_mask)
+    # print('MIANet ouput:  ', 'acc: ', acc, "   iou:  ", iou[2][0])
+
+    colors = [[0, 0, 0], [0, 0, 255]]
+    best_pred = pred_label.cpu()
+    feature = best_pred.squeeze(dim=0)
+    feature = np.array(feature)
+    seg_img = np.zeros([size, size, 3])
+    seg_img = np.uint8(seg_img)
+    for c in range(2):
+        seg_img[:, :, 0] += np.uint8((feature[:, :] == c) * np.uint8(colors[c][0]))
+        seg_img[:, :, 1] += np.uint8((feature[:, :] == c) * np.uint8(colors[c][1]))
+        seg_img[:, :, 2] += np.uint8((feature[:, :] == c) * np.uint8(colors[c][2]))
+
+    old_img = ori_image
+    old_img = cv2.resize(old_img, (size, size), interpolation=cv2.INTER_LINEAR)
+    img = cv2.addWeighted(old_img, 1, seg_img, 0.4, 0)
+    cv2.imwrite('visualization/%d/%d-our.png' % (seed, seed), img)
+
+    # 4. visual the query groundtruth
+    colors = [[0, 0, 0], [0, 0, 255]]
+    best_pred = query_mask[:, :, :].cpu().long()
+    feature = best_pred.squeeze(dim=0).squeeze(0)
+    feature = np.array(feature)
+    seg_img = np.zeros([size, size, 3])
+    seg_img = np.uint8(seg_img)
+    for c in range(2):
+        seg_img[:, :, 0] += np.uint8((feature[:, :] == c) * np.uint8(colors[c][0]))
+        seg_img[:, :, 1] += np.uint8((feature[:, :] == c) * np.uint8(colors[c][1]))
+        seg_img[:, :, 2] += np.uint8((feature[:, :] == c) * np.uint8(colors[c][2]))
+
+    img = cv2.addWeighted(old_img, 1, seg_img, 0.4, 0)
+    cv2.imwrite('visualization/%d/%d-GT.png' % (seed, seed), img)
+
+
+
+
+
+if __name__ == '__main__':
+
+    class_index = [" ", "aeroplane", "bicycle", "bird", "boat", "bottle",
+                   "bus", "car", "cat", "chair", " cow",
+                   "diningtable", "dog", "horse", "motobike", "person",
+                   "pottedplant", "sheep", "sofa", "train", "tvmonitor"
+                   ]
+
+    # load the config parameters as the training process
+    args = load_cfg_from_cfg_file("config/pascal/pascal_split0_resnet50.yaml")
+    BatchNorm = nn.BatchNorm2d
+    criterion = nn.CrossEntropyLoss(ignore_index=args.ignore_label)
+
+    # set the baseline = mianet
+    baseline = MIANet( layers=args.layers, classes=2, zoom_factor=8, \
+                   criterion=nn.CrossEntropyLoss(ignore_index=255), BatchNorm=BatchNorm, \
+                   pretrained=False, shot=args.shot, ppm_scales=args.ppm_scales, vgg=args.vgg)
+    MIANet = MIANet(args=args, layers=args.layers, classes=2, zoom_factor=8, \
+                   criterion=nn.CrossEntropyLoss(ignore_index=255), BatchNorm=BatchNorm, \
+                   pretrained=False, shot=args.shot, ppm_scales=args.ppm_scales, vgg=args.vgg)
+
+    # set the training weights of baseline and mianet
+    weights_baseline = "exp/pascal/split0_resnet50/baseline/final.pth"
+    weights_mianet = "exp/pascal/split0_resnet50/mianet/final.pth"
+
+    # if data parallel
+    baseline = torch.nn.DataParallel(baseline.cuda())
+    MIANet = torch.nn.DataParallel(MIANet.cuda())
+
+    # load training weight
+    baseline.load_state_dict(torch.load(weights_baseline)['state_dict'], strict=True)
+    MIANet.load_state_dict(torch.load(weights_mianet)['state_dict'], strict=True)
+
+    baseline.eval()
+    MIANet.eval()
+    args.distributed = False
+
+    # set DATASET. Some tricks in original transform.py and transform_tri.py will
+    # Disrupt the pixel correspondence between the prediction results and the original image.
+    # therefore it is necessary to rewrite the following process.
+    mean = [0.485, 0.456, 0.406]
+    mean = [item * 255 for item in mean]
+    std = [0.229, 0.224, 0.225]
+    std = [item * 255 for item in std]
+    value_scale = 255
+    mean = [0.485, 0.456, 0.406]
+    mean = [item * value_scale for item in mean]
+    std = [0.229, 0.224, 0.225]
+    std = [item * value_scale for item in std]
+    # Val
+    if True:
+        val_transform = transform.Compose([
+            transform.Direct_Resize(size=args.val_size),
+            transform.ToTensor(),
+            transform.Normalize(mean=mean, std=std)])
+        val_transform_tri = transform_tri.Compose([
+            transform_tri.Direct_Resize(size=args.val_size),
+            transform_tri.ToTensor(),
+            transform_tri.Normalize(mean=mean, std=std)])
+
+        if args.data_set == 'pascal' or args.data_set == 'coco':
+            val_data = dataset.SemData(split=args.split, shot=args.shot, data_root="",
+                                       base_data_root="", data_list="", \
+                                       transform=val_transform, transform_tri=val_transform_tri, mode='demo', \
+                                       data_set=args.data_set, use_split_coco=True)
+        val_loader = torch.utils.data.DataLoader(val_data, batch_size=args.batch_size_val, shuffle=True,
+                                                 num_workers=args.workers, pin_memory=False, sampler=None)
+
+    # generating predicting results in a batch manner.
+    iterable_train_loader = iter(val_loader)
+    for seed in range(0, 90):
+        image, label, label_b, s_x, s_y, subcls_list, support_path, query_path, class_chosen = iterable_train_loader.next()
+        spprt_imgs = s_x.to(0, non_blocking=True)
+        s_label = s_y.to(0, non_blocking=True)
+        q_label = label.to(0, non_blocking=True)
+        qry_imgs = image.to(0, non_blocking=True)
+        class_chosen = class_chosen.cuda(non_blocking=True)
+
+        # original support image
+        support_ori = cv2.imread(support_path[0], cv2.IMREAD_COLOR)   # ori---> original
+        support_ori = np.uint8(support_ori)
+
+        # original query image
+        query_ori = cv2.imread(query_path[0], cv2.IMREAD_COLOR)
+        query_ori = np.uint8(query_ori)
+
+        # predicting
+        with torch.no_grad():
+            baseline_output = baseline(s_x=spprt_imgs, s_y=s_label, x=qry_imgs, y=q_label)
+            mianet_output = MIANet(s_x=spprt_imgs, s_y=s_label, x=qry_imgs, y=q_label, class_chosen=class_chosen)
+
+        baseline_output = F.interpolate(baseline_output, size=q_label.size()[1:], mode='bilinear', align_corners=True)
+        mianet_output = F.interpolate(mianet_output, size=q_label.size()[1:], mode='bilinear', align_corners=True)
+
+        # save the visualization results
+        os.mkdir('visualization/%d'%seed)
+        with open('visualization/%d/info.txt'%seed, mode='a') as f:
+            f.writelines("support: "+support_path[0]+'\n')
+            f.writelines("query: " + query_path[0])
+        visual_two_model(support_ori, s_y, baseline_output, mianet_output, query_ori, q_label, seed=seed)
